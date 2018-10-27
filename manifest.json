@@ -11,5 +11,9 @@
         "scripts/prowler_script.js"
       ]
     }
+  ],
+  "web_accessible_resources": [
+    "files/balck_square.png",
+    "files/words.csv"
   ]
 }
