@@ -8,7 +8,7 @@
         "<all_urls>"
       ],
       "js": [
-        "prowler_script.js"
+        "scripts/prowler_script.js"
       ]
     }
   ]
