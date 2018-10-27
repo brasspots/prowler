@@ -1,7 +1,18 @@
 {
   "manifest_version": 2,
-  "name": "Prowler",
+  "name": "Prowler Bear",
   "version": "0.1",
+  "icons": {
+    "128": "files/prowler_128.png"
+  },
+  "web_accessible_resources": [
+    "files/balck_square.png",
+    "files/words.csv"
+  ],
+  "browser_action": {
+    "default_title": "Prowler Bear",
+    "default_icon": "files/prowler_19.png"
+  },
   "content_scripts": [
     {
       "matches": [
@@ -11,9 +22,5 @@
         "scripts/prowler_script.js"
       ]
     }
-  ],
-  "web_accessible_resources": [
-    "files/balck_square.png",
-    "files/words.csv"
   ]
 }
