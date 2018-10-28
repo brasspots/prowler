@@ -86,7 +86,7 @@ function main(files) {
     // check for comma
     if (files[0][current_pointer] === ',') {
       // append the scanned value
-      bad_words.push(files[0].substring(base_pointer, current_pointer))
+      bad_words.push(files[0].substring(base_pointer, current_pointer).replace('\n', ''))
       // update pointers
       base_pointer = current_pointer + 1
     }
@@ -94,7 +94,7 @@ function main(files) {
   // add last value if no trailing comma
   if (!files[0].endsWith(',')) {
     // append last value
-    bad_words.push(files[0].substring(base_pointer, files[0].length))
+    bad_words.push(files[0].substring(base_pointer, files[0].length).replace('\n', ''))
   };
   // get warning head and body
   warning_head = '';
