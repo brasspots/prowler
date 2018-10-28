@@ -5,18 +5,24 @@ matches = [];
 match_count = 0;
 // TODO: check given string for mathces with bad_words
 function string_check(text) {
-  // initialise hit flag
-  hit = false;
-  for (let i = 0; i < bad_words.length; i++) {
-    // search for a match
-    if (text.includes(bad_words[i])) {
-      // set hit and increment match_count
-      hit = true;
-      match_count++
-    }
-  };
-  // return if there has been a match
-  return hit
+  // check for undefined value
+  if (text === undefined) {
+    // word cannot be in undefined
+    return false
+  } else {
+    // initialise hit flag
+    hit = false;
+    for (let i = 0; i < bad_words.length; i++) {
+      // search for a match
+      if (text.includes(bad_words[i])) {
+        // set hit and increment match_count
+        hit = true;
+        match_count++
+      }
+    };
+    // return if there has been a match
+    return hit
+  }
 };
 // recursive function to traverse DOM and get to end nodes
 function traverse(element){
