@@ -70,7 +70,9 @@ function main(files) {
     // recurse funcrion on all elements
     } else {
       for (let i = 0; i < element.childElementCount; i++) {
-        traverse(element.children[i])
+        if (element.children[i] !== undefined) {
+          traverse(element.children[i])
+        }
       }
     }
   };
