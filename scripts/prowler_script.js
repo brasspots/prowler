@@ -76,18 +76,24 @@ function main(files) {
   };
   // change page content to warning
   function show_warning() {
-  
+    // change head and body
+    document.head.innerHTML = warning_head;
+    document.body.innerHTML = warning_body;
+    // load in critter count
+    document.getElementById('critter_count').innerText = match_count
   };
   // revert to original page
   function revert() {
-  
+    // change head and body
+    document.head.innerHTML = original_head;
+    document.body.innerHTML = original_body;
   };
 
   // main code
   
   // initialise bad words and base pointer for getting words out of files[0]
-  bad_words = []
-  base_pointer = 0
+  let bad_words = []
+  let base_pointer = 0
   // get words out of files[0]
   for (let current_pointer = 0; current_pointer < files[0].length; current_pointer++) {
     // check for comma
@@ -103,11 +109,18 @@ function main(files) {
     // append last value
     bad_words.push(files[0].substring(base_pointer, files[0].length).replace('\n', ''))
   };
+  // get original head and body
+  let original_head = document.head.innerHTML;
+  let original_body = document.body.innerHTML;
   // get warning head and body
-  warning_head = files[1].substring(files[1].indexOf('<head>') + 6, files[1].indexOf('</head>'));
-  warning_body = files[1].substring(files[1].indexOf('<body>') + 6, files[1].indexOf('</body>'));
+  let warning_head = files[1].substring(files[1].indexOf('<head>') + 6, files[1].indexOf('</head>'));
+  let warning_body = files[1].substring(files[1].indexOf('<body>') + 6, files[1].indexOf('</body>'));
   // scan html for bad words
-  traverse()
+  traverse();
+  if (match_count !== 0) {
+    // display warning
+    show_warning()
+  }
 };
 
 // start the script
