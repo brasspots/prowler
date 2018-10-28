@@ -74,7 +74,14 @@ function main(files) {
       }
     }
   };
-  // TODO: change page content to warning
+  // change page content to warning
+  function show_warning() {
+  
+  };
+  // revert to original page
+  function revert() {
+  
+  };
 
   // main code
   
@@ -97,10 +104,10 @@ function main(files) {
     bad_words.push(files[0].substring(base_pointer, files[0].length).replace('\n', ''))
   };
   // get warning head and body
-  warning_head = '';
-  warning_body = '';
-  
-  console.log(bad_words)
+  warning_head = files[1].substring(files[1].indexOf('<head>') + 6, files[1].indexOf('</head>'));
+  warning_body = files[1].substring(files[1].indexOf('<body>') + 6, files[1].indexOf('</body>'));
+  // scan html for bad words
+  traverse()
 };
 
 // start the script
