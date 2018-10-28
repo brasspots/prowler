@@ -1,9 +1,35 @@
-// TODO: load in bad words
-bad_words = ['iceberg', 'penguin'];
 // initialise matches list and match_count
-matches = [];
-match_count = 0;
-// TODO: check given string for mathces with bad_words
+let matches = [];
+let match_count = 0;
+
+// functions
+
+// function to get content <- This is SUPER hacky and should not be done, find a better way to do this
+function get_file(gots, gets) {
+  // check if all are got
+  if (gets.length === 0) {
+    // call main with list of file content (reverse so the order corrosponds with gets)
+    main(gots.reverse())
+  } else {
+    // get chrome extension path of URL
+    url = chrome.runtime.getURL(gets.pop());
+    // initialise resource fetcher
+    let fetcher = new XMLHttpRequest();
+    // when resource has fetched
+    fetcher.onreadystatechange=function() {
+      if (fetcher.readyState==4 && fetcher.status==200) {
+        // add content to gets
+        gots.push(fetcher.responseText);
+        // recurse
+        get_file(gots, gets)
+      }
+    };
+    // fetch resource
+    fetcher.open("GET", url, true);
+    fetcher.send();
+  }
+};
+// check given string for mathces with bad_words
 function string_check(text) {
   // check for undefined value
   if (text === undefined) {
@@ -45,9 +71,15 @@ function traverse(element){
       traverse(element.children[i])
     }
   }
-}
+};
+// TODO: change page content to warning
 
 // main code
 
-traverse(document.body)
-alert(match_count)
+function main(files) {
+  console.log(files)
+};
+
+// start the script
+files = ['files/words.csv'];
+get_file([], files)
