@@ -14,7 +14,7 @@ function string_check(text) {
     hit = false;
     for (let i = 0; i < bad_words.length; i++) {
       // search for a match
-      if (text.includes(bad_words[i])) {
+      if (text.toUpperCase().includes(bad_words[i].toUpperCase())) {
         // set hit and increment match_count
         hit = true;
         match_count++
