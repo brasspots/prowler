@@ -77,7 +77,30 @@ function main(files) {
   // TODO: change page content to warning
 
   // main code
-  console.log(files)
+  
+  // initialise bad words and base pointer for getting words out of files[0]
+  bad_words = []
+  base_pointer = 0
+  // get words out of files[0]
+  for (let current_pointer = 0; current_pointer < files[0].length; current_pointer++) {
+    // check for comma
+    if (files[0][current_pointer] === ',') {
+      // append the scanned value
+      bad_words.push(files[0].substring(base_pointer, current_pointer))
+      // update pointers
+      base_pointer = current_pointer + 1
+    }
+  };
+  // add last value if no trailing comma
+  if (!files[0].endsWith(',')) {
+    // append last value
+    bad_words.push(files[0].substring(base_pointer, files[0].length))
+  };
+  // get warning head and body
+  warning_head = '';
+  warning_body = '';
+  
+  console.log(bad_words)
 };
 
 // start the script
