@@ -81,5 +81,5 @@ function main(files) {
 };
 
 // start the script
-files = ['files/words.csv'];
+files = ['files/words.csv', 'files/warning.html'];
 get_file([], files)
