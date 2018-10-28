@@ -1,3 +1,8 @@
+// test function for button
+function clicky () {
+  alert('That\'s a click, cap\'n!')
+};
+
 // initialiser function to get content <- This is SUPER hacky and should not be done, find a better way to do this
 function get_file(gots, gets) {
   // check if all are got
@@ -70,9 +75,7 @@ function main(files) {
     // recurse funcrion on all elements
     } else {
       for (let i = 0; i < element.childElementCount; i++) {
-        if (element.children[i] !== undefined) {
-          traverse(element.children[i])
-        }
+        traverse(element.children[i])
       }
     }
   };
@@ -82,7 +85,9 @@ function main(files) {
     document.head.innerHTML = warning_head;
     document.body.innerHTML = warning_body;
     // load in critter count
-    document.getElementById('critter_count').innerText = match_count
+    document.getElementById('critter_count').innerText = match_count;
+    // add button listener
+    document.getElementById('continue_no_change').addEventListener('click', revert)
   };
   // revert to original page
   function revert() {
@@ -118,7 +123,7 @@ function main(files) {
   let warning_head = files[1].substring(files[1].indexOf('<head>') + 6, files[1].indexOf('</head>'));
   let warning_body = files[1].substring(files[1].indexOf('<body>') + 6, files[1].indexOf('</body>'));
   // scan html for bad words
-  traverse();
+  traverse(document.body);
   if (match_count !== 0) {
     // display warning
     show_warning()
