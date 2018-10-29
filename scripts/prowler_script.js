@@ -86,14 +86,27 @@ function main(files) {
     document.body.innerHTML = warning_body;
     // load in critter count
     document.getElementById('critter_count').innerText = match_count;
-    // add button listener
-    document.getElementById('continue_no_change').addEventListener('click', revert)
+    // add button listeners
+    document.getElementById('continue_no_change').addEventListener('click', revert_page)
+    document.getElementById('continue_and_redact').addEventListener('click', redact_page)
   };
   // revert to original page
-  function revert() {
+  function revert_page() {
     // change head and body
     document.head.innerHTML = original_head;
     document.body.innerHTML = original_body;
+  };
+  // revert to original page and redact bad words
+  function redact_page() {
+    // change head and body
+    document.head.innerHTML = original_head;
+    document.body.innerHTML = original_body;
+    // redact elements
+    for (let i = 0; i < matches.length; i++) {
+      
+      // TODO: add body of loop
+      
+    }
   };
 
   // main code
