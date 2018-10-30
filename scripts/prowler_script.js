@@ -1,8 +1,3 @@
-// test function for button
-function clicky () {
-  alert('That\'s a click, cap\'n!')
-};
-
 // initialiser function to get content <- This is SUPER hacky and should not be done, find a better way to do this
 function get_file(gots, gets) {
   // check if all are got
