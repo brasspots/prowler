@@ -8,7 +8,7 @@
   },
   "web_accessible_resources": [
     "files/warning.html",
-    "files/balck_square.png",
+    "files/black_square.png",
     "files/words.csv"
   ],
   "browser_action": {
