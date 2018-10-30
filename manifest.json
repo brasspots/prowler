@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Prowler Bear",
   "description": "Prowls all sites for nasty critters",
-  "version": "1.0",
+  "version": "1.1",
   "icons": {
     "128": "files/prowler_128.png"
   },
