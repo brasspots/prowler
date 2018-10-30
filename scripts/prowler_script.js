@@ -114,7 +114,9 @@ function main(files) {
     // redact src of all images
     images = document.getElementsByTagName('img');
     for (let i = 0; i < images.length; i++) {
+      // redact both src and srcset
       images[i].src = chrome.runtime.getURL('/files/black_square.png')
+      images[i].srcset = chrome.runtime.getURL('/files/black_square.png')
     }
   };
   // redact a string of bad words
