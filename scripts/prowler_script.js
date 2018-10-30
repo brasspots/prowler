@@ -15,8 +15,8 @@ function get_file(gots, gets) {
     // initialise resource fetcher
     let fetcher = new XMLHttpRequest();
     // when resource has fetched
-    fetcher.onreadystatechange=function() {
-      if (fetcher.readyState==4 && fetcher.status==200) {
+    fetcher.onreadystatechange = function() {
+      if (fetcher.readyState == 4 && fetcher.status == 200) {
         // add content to gets
         gots.push(fetcher.responseText);
         // recurse
