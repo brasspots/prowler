@@ -103,10 +103,31 @@ function main(files) {
     document.body.innerHTML = original_body;
     // redact elements
     for (let i = 0; i < matches.length; i++) {
-      
-      // TODO: add body of loop
-      
+      // redact ALT of images
+      if (matches[i].tagName === 'IMG') {
+        matches[i].alt = redact_string(matches[i].alt)
+      } else {
+      // redact text of element
+        matches[i].innerText = redact_string(matches[i].text)
+      }
+    };
+    // redact src of all images
+    images = document.getElementsByTagName('img');
+    for (let i = 0; i < images.length; i++) {
+      images[i].src = chrome.runtime.getURL('/files/black_square.png')
     }
+  };
+  // redact a string of bad words
+  function redact_string(bad_string) {
+    // replace every bad word
+    for (let i = 0; i < bad_words.length; i++) {
+      while bad_string.includes(bad_words[i]) {
+        // replace the word
+        bad_string = bad_string.replace(bad_words[i], '\u2588'.repeat(bad_words[i].length))
+      }
+    };
+    // return redacted string
+    return bad_string
   };
 
   // main code
