@@ -121,7 +121,7 @@ function main(files) {
   function redact_string(bad_string) {
     // replace every bad word
     for (let i = 0; i < bad_words.length; i++) {
-      while bad_string.includes(bad_words[i]) {
+      while (bad_string.includes(bad_words[i])) {
         // replace the word
         bad_string = bad_string.replace(bad_words[i], '\u2588'.repeat(bad_words[i].length))
       }
