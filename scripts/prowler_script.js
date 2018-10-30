@@ -108,7 +108,7 @@ function main(files) {
         matches[i].alt = redact_string(matches[i].alt)
       } else {
       // redact text of element
-        matches[i].innerText = redact_string(matches[i].text)
+        matches[i].innerText = redact_string(matches[i].innerText)
       }
     };
     // redact src of all images
