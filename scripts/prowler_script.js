@@ -26,7 +26,7 @@ function get_file(gots, gets) {
 
 function main(files) {
   // debug log
-  console.log('Prowler: Loaded')
+  console.log('Prowler: Loaded Prowler')
   // initialise matches list and match_count
   let matches = [];
   let match_count = 0;
@@ -63,14 +63,14 @@ function main(files) {
         if (string_check(element.alt)) {
           matches.push(element);
           // log the finding
-          console.log('Prowler: Found critter in', element)
+          //console.log('Prowler: Found critter in', element)
         }
       // search innerText if innerText is not blank
       } else if (element.innerText !== '') {
         if (string_check(element.innerText)) {
           matches.push(element);
           // log the finding
-          console.log('Prowler: Found critter in', element)
+          //console.log('Prowler: Found critter in', element)
         }
       }
     // recurse funcrion on all elements
@@ -102,34 +102,39 @@ function main(files) {
     // change head and body
     document.head.innerHTML = original_head;
     document.body.innerHTML = original_body;
+    // get matches again
+    traverse(document.body);
     // redact elements
     for (let i = 0; i < matches.length; i++) {
-      
-      console.log('Prowler: redact count', i);
-      
       // redact ALT of images
       if (matches[i].tagName === 'IMG') {
         matches[i].alt = redact_string(matches[i].alt)
       } else {
       // redact text of element
         matches[i].innerText = redact_string(matches[i].innerText)
-      }
+      };
+      // debug log
+      //console.log('Prowler: redacted text element', matches[i]);
     };
     // redact src of all images
     images = document.getElementsByTagName('img');
     for (let i = 0; i < images.length; i++) {
       // redact both src and srcset
-      images[i].src = chrome.runtime.getURL('/files/black_square.png')
-      images[i].srcset = chrome.runtime.getURL('/files/black_square.png')
+      images[i].src = chrome.runtime.getURL('/files/black_square.png');
+      images[i].srcset = chrome.runtime.getURL('/files/black_square.png');
+      // debug log
+      //console.log('Prowler: redacted image element', images[i])
     }
   };
   // redact a string of bad words
   function redact_string(bad_string) {
     // replace every bad word
     for (let i = 0; i < bad_words.length; i++) {
-      while (bad_string.includes(bad_words[i])) {
+      while (bad_string.toUpperCase().includes(bad_words[i].toUpperCase())) {
+        // find bad word index
+        let start_index = bad_string.toUpperCase().indexOf(bad_words[i].toUpperCase())
         // replace the word
-        bad_string = bad_string.replace(bad_words[i], '\u2588'.repeat(bad_words[i].length))
+        bad_string = bad_string.substring(0, start_index) + '\u2588'.repeat(bad_words[i].length) + bad_string.substring(start_index + bad_words[i].length, bad_string.length)
       }
     };
     // return redacted string
@@ -157,7 +162,7 @@ function main(files) {
     bad_words.push(files[0].substring(base_pointer, files[0].length).replace('\n', ''))
   };
   // debug log
-  console.log('Prowler: Bad words loaded')
+  //console.log('Prowler: Bad words loaded')
   // get original head and body
   let original_head = document.head.innerHTML;
   let original_body = document.body.innerHTML;
@@ -167,7 +172,7 @@ function main(files) {
   // scan html for bad words
   traverse(document.body);
   // debug log
-  console.log('Prowler: Page traveral complete')
+  //console.log('Prowler: Page traveral complete')
   if (match_count !== 0) {
     // display warning
     show_warning()
