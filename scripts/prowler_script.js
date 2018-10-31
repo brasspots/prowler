@@ -59,12 +59,16 @@ function main(files) {
       // search alt if element is img
       if (element.tagName === 'IMG') {
         if (string_check(element.alt)) {
-          matches.push(element)
+          matches.push(element);
+          // log the finding
+          console.log('Prowler: Found critter in', element)
         }
       // search innerText if innerText is not blank
       } else if (element.innerText !== '') {
         if (string_check(element.innerText)) {
-          matches.push(element)
+          matches.push(element);
+          // log the finding
+          console.log('Prowler: Found critter in', element)
         }
       }
     // recurse funcrion on all elements
@@ -98,6 +102,9 @@ function main(files) {
     document.body.innerHTML = original_body;
     // redact elements
     for (let i = 0; i < matches.length; i++) {
+      
+      console.log('Prowler: redact count', i);
+      
       // redact ALT of images
       if (matches[i].tagName === 'IMG') {
         matches[i].alt = redact_string(matches[i].alt)
