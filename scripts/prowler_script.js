@@ -25,6 +25,8 @@ function get_file(gots, gets) {
 };
 
 function main(files) {
+  // debug log
+  console.log('Prowler: Loaded')
   // initialise matches list and match_count
   let matches = [];
   let match_count = 0;
@@ -154,6 +156,8 @@ function main(files) {
     // append last value
     bad_words.push(files[0].substring(base_pointer, files[0].length).replace('\n', ''))
   };
+  // debug log
+  console.log('Prowler: Bad words loaded')
   // get original head and body
   let original_head = document.head.innerHTML;
   let original_body = document.body.innerHTML;
@@ -162,6 +166,8 @@ function main(files) {
   let warning_body = files[1].substring(files[1].indexOf('<body>') + 6, files[1].indexOf('</body>'));
   // scan html for bad words
   traverse(document.body);
+  // debug log
+  console.log('Prowler: Page traveral complete')
   if (match_count !== 0) {
     // display warning
     show_warning()
