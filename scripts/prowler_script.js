@@ -90,6 +90,7 @@ function main(files) {
     // add button listeners
     document.getElementById('continue_no_change').addEventListener('click', revert_page)
     document.getElementById('continue_and_redact').addEventListener('click', redact_page)
+    document.getElementById('go_back').addEventListener('click', history.back)
   };
   // revert to original page
   function revert_page() {
