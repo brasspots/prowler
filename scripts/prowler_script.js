@@ -90,6 +90,7 @@ function main(files) {
     // add button listeners
     document.getElementById('continue_no_change').addEventListener('click', revert_page)
     document.getElementById('continue_and_redact').addEventListener('click', redact_page)
+    document.getElementById('go_back').addEventListener('click', go_back)
   };
   // revert to original page
   function revert_page() {
@@ -139,6 +140,12 @@ function main(files) {
     };
     // return redacted string
     return bad_string
+  };
+  // go back a page
+  function go_back() {
+    // debug log
+    //console.log('Prowler: going back a page')
+    history.back()
   };
 
   // main code
