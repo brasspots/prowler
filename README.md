@@ -5,3 +5,4 @@ redacting blocks out all bad words and images
 
 Coming Up:
  - Search page when it it updated, not just on initial load
+ - Option to view breakdown of matches
