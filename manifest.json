@@ -15,6 +15,10 @@
     "default_title": "Prowler Bear",
     "default_icon": "files/prowler_19.png"
   },
+  "permissions": [
+    "webRequest",
+    "*://*"
+  ],
   "content_scripts": [
     {
       "matches": [
