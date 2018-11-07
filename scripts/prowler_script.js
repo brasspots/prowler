@@ -27,10 +27,13 @@ function get_file(gots, gets) {
 function main(files) {
   // debug log
   console.log('Prowler: Loaded Prowler')
-  // initialise matches list, match_count and state
+  // initialise matches list, match_count, state and waiting
   let matches = [];
   let match_count = 0;
   let state = "prowling";
+  let waiting = true;
+  // initialise last_scan_request
+  let last_scan_request = (new Date()).getTime();
   // initialise bad words and base pointer for getting words out of files[0]
   let bad_words = []
   let base_pointer = 0
@@ -53,13 +56,30 @@ function main(files) {
   let warning_head = files[1].substring(files[1].indexOf('<head>') + 6, files[1].indexOf('</head>'));
   let warning_body = files[1].substring(files[1].indexOf('<body>') + 6, files[1].indexOf('</body>'));
   // add chrome message listener
-  chrome.runtime.onMessage.addListener(scan(request, sender, respond));
-  
-  // initial scan
-  scan({action: "scan"}, null, null);
+  chrome.runtime.onMessage.addListener(update(request, sender, respond));
   
   // functions
   
+  // update request
+  function update(request, sender, respond) {
+    // check message is for us
+    if (request.action === "prowler_scan") {
+    	// change waiting and update time
+    	waiting = true;
+    	last_scan_request = (new Date()).getTime()
+    }
+  };
+  // handle request
+  function handle() {
+    // wait for request
+    while (!waiting || (new Date()).getTime() - last_scan_request < 200) {
+      // waiting
+    };
+    // update waiting
+    waiting = false;
+    // run scan
+    scan();
+  };
   // check given string for mathces with bad_words
   function string_check(text) {
     // check for undefined value
@@ -169,28 +189,30 @@ function main(files) {
     history.back()
   };
   // scan the page
-  function scan(request, sender, respond) {
-    // check message is for us
-    if (request.action === "prowler_scan") {
+  function scan() {
       // get original head and body
       window.original_head = document.head.innerHTML;
       window.original_body = document.body.innerHTML;
       // scan html for bad words
       traverse(document.body);
-      // debug log
-      //console.log('Prowler: Page traveral complete')
+      // new critters detected
       if (match_count !== 0) {
-        // ready mode
-        if (mode === "prowling") {
-          // display warning
-          show_warning()
-        } else if (mode === "redact") {
-          // redact page
-          redact_page()
-        }
-        // implicit mode === "continue" so do nothing
+      // ready mode
+      if (mode === "prowling") {
+        // display warning
+        show_warning()
+      } else if (mode === "redact") {
+        // redact page
+        redact_page()
       }
+      // implicit mode === "continue" so do nothing
     }
+  };
+
+  // handle loop
+
+  while (true) {
+    handle()
   }
 };
 
