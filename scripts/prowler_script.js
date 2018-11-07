@@ -27,9 +27,36 @@ function get_file(gots, gets) {
 function main(files) {
   // debug log
   console.log('Prowler: Loaded Prowler')
-  // initialise matches list and match_count
+  // initialise matches list, match_count and state
   let matches = [];
   let match_count = 0;
+  let state = "prowling";
+  // initialise bad words and base pointer for getting words out of files[0]
+  let bad_words = []
+  let base_pointer = 0
+  // get words out of files[0]
+  for (let current_pointer = 0; current_pointer < files[0].length; current_pointer++) {
+    // check for comma
+    if (files[0][current_pointer] === ',') {
+      // append the scanned value
+      bad_words.push(files[0].substring(base_pointer, current_pointer).replace('\n', ''));
+      // update pointers
+      base_pointer = current_pointer + 1
+      }
+    };
+  // add last value if no trailing comma
+  if (!files[0].endsWith(',')) {
+    // append last value
+    bad_words.push(files[0].substring(base_pointer, files[0].length).replace('\n', ''))
+  }
+  // get warning head and body
+  let warning_head = files[1].substring(files[1].indexOf('<head>') + 6, files[1].indexOf('</head>'));
+  let warning_body = files[1].substring(files[1].indexOf('<body>') + 6, files[1].indexOf('</body>'));
+  // add chrome message listener
+  chrome.runtime.onMessage.addListener(scan(request, sender, respond));
+  
+  // initial scan
+  scan({action: "scan"}, null, null);
   
   // functions
   
@@ -62,15 +89,11 @@ function main(files) {
       if (element.tagName === 'IMG') {
         if (string_check(element.alt)) {
           matches.push(element);
-          // log the finding
-          //console.log('Prowler: Found critter in', element)
         }
       // search innerText if innerText is not blank
       } else if (element.innerText !== '') {
         if (string_check(element.innerText)) {
           matches.push(element);
-          // log the finding
-          //console.log('Prowler: Found critter in', element)
         }
       }
     // recurse funcrion on all elements
@@ -88,8 +111,8 @@ function main(files) {
     // load in critter count
     document.getElementById('critter_count').innerText = match_count;
     // add button listeners
-    document.getElementById('continue_no_change').addEventListener('click', revert_page)
-    document.getElementById('continue_and_redact').addEventListener('click', redact_page)
+    document.getElementById('continue_no_change').addEventListener('click', revert_page);
+    document.getElementById('continue_and_redact').addEventListener('click', redact_page);
     document.getElementById('go_back').addEventListener('click', go_back)
   };
   // revert to original page
@@ -97,6 +120,8 @@ function main(files) {
     // change head and body
     document.head.innerHTML = original_head;
     document.body.innerHTML = original_body;
+    // update mode
+    mode = "continue"
   };
   // revert to original page and redact bad words
   function redact_page() {
@@ -114,8 +139,6 @@ function main(files) {
       // redact text of element
         matches[i].innerText = redact_string(matches[i].innerText)
       };
-      // debug log
-      //console.log('Prowler: redacted text element', matches[i]);
     };
     // redact src of all images
     images = document.getElementsByTagName('img');
@@ -123,9 +146,9 @@ function main(files) {
       // redact both src and srcset
       images[i].src = chrome.runtime.getURL('/files/black_square.png');
       images[i].srcset = chrome.runtime.getURL('/files/black_square.png');
-      // debug log
-      //console.log('Prowler: redacted image element', images[i])
-    }
+    };
+    // update mode
+    mode = "redact"
   };
   // redact a string of bad words
   function redact_string(bad_string) {
@@ -143,46 +166,31 @@ function main(files) {
   };
   // go back a page
   function go_back() {
-    // debug log
-    //console.log('Prowler: going back a page')
     history.back()
   };
-
-  // main code
-  
-  // initialise bad words and base pointer for getting words out of files[0]
-  let bad_words = []
-  let base_pointer = 0
-  // get words out of files[0]
-  for (let current_pointer = 0; current_pointer < files[0].length; current_pointer++) {
-    // check for comma
-    if (files[0][current_pointer] === ',') {
-      // append the scanned value
-      bad_words.push(files[0].substring(base_pointer, current_pointer).replace('\n', ''))
-      // update pointers
-      base_pointer = current_pointer + 1
+  // scan the page
+  function scan(request, sender, respond) {
+    // check message is for us
+    if (request.action === "prowler_scan") {
+      // get original head and body
+      window.original_head = document.head.innerHTML;
+      window.original_body = document.body.innerHTML;
+      // scan html for bad words
+      traverse(document.body);
+      // debug log
+      //console.log('Prowler: Page traveral complete')
+      if (match_count !== 0) {
+        // ready mode
+        if (mode === "prowling") {
+          // display warning
+          show_warning()
+        } else if (mode === "redact") {
+          // redact page
+          redact_page()
+        }
+        // implicit mode === "continue" so do nothing
+      }
     }
-  };
-  // add last value if no trailing comma
-  if (!files[0].endsWith(',')) {
-    // append last value
-    bad_words.push(files[0].substring(base_pointer, files[0].length).replace('\n', ''))
-  };
-  // debug log
-  //console.log('Prowler: Bad words loaded')
-  // get original head and body
-  let original_head = document.head.innerHTML;
-  let original_body = document.body.innerHTML;
-  // get warning head and body
-  let warning_head = files[1].substring(files[1].indexOf('<head>') + 6, files[1].indexOf('</head>'));
-  let warning_body = files[1].substring(files[1].indexOf('<body>') + 6, files[1].indexOf('</body>'));
-  // scan html for bad words
-  traverse(document.body);
-  // debug log
-  //console.log('Prowler: Page traveral complete')
-  if (match_count !== 0) {
-    // display warning
-    show_warning()
   }
 };
 
