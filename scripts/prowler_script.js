@@ -124,13 +124,12 @@ function go_back() {
 };
 // scan the page
 function scan(request, sender, respond) {
-  // unpack request
-  if (request.action === "prowler_load") {
+  // unpack request if it is for us
+  if (request.action === "prowler_scan") {
     // update variables from request
     bad_words = request.words;
     warning_head = request.head;
     warning_body = request.body;
-  } else if (request.action === "prowler_scan") {
     // get original head and body
     window.original_head = document.head.innerHTML;
     window.original_body = document.body.innerHTML;
