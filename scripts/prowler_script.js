@@ -74,8 +74,8 @@ function revert_page() {
   // change head and body
   document.head.innerHTML = original_head;
   document.body.innerHTML = original_body;
-  // update mode
-  mode = "continue"
+  // update state
+  state = "sleeping"
 };
 // revert to original page and redact bad words
 function redact_page() {
@@ -101,8 +101,8 @@ function redact_page() {
     images[i].src = chrome.runtime.getURL('/files/black_square.png');
     images[i].srcset = chrome.runtime.getURL('/files/black_square.png');
   };
-  // update mode
-  mode = "redact"
+  // update state
+  state = "redacting"
 };
 // redact a string of bad words
 function redact_string(bad_string) {
@@ -137,15 +137,15 @@ function scan(request, sender, respond) {
     traverse(document.body);
     // new critters detected
     if (match_count !== 0) {
-      // ready mode
-      if (mode === "prowling") {
+      // ready state
+      if (state === "prowling") {
         // display warning
         show_warning()
-      } else if (mode === "redact") {
+      } else if (state === "redacting") {
         // redact page
         redact_page()
       }
-      // implicit mode === "continue" so do nothing
+      // implicit state === "sleeping" so do nothing
     }
   }
 }
