@@ -56,30 +56,10 @@ function main(files) {
   let warning_head = files[1].substring(files[1].indexOf('<head>') + 6, files[1].indexOf('</head>'));
   let warning_body = files[1].substring(files[1].indexOf('<body>') + 6, files[1].indexOf('</body>'));
   // add chrome message listener
-  chrome.runtime.onMessage.addListener(update(request, sender, respond));
+  chrome.runtime.onMessage.addListener(scan);
   
   // functions
   
-  // update request
-  function update(request, sender, respond) {
-    // check message is for us
-    if (request.action === "prowler_scan") {
-    	// change waiting and update time
-    	waiting = true;
-    	last_scan_request = (new Date()).getTime()
-    }
-  };
-  // handle request
-  function handle() {
-    // wait for request
-    while (!waiting || (new Date()).getTime() - last_scan_request < 200) {
-      // waiting
-    };
-    // update waiting
-    waiting = false;
-    // run scan
-    scan();
-  };
   // check given string for mathces with bad_words
   function string_check(text) {
     // check for undefined value
@@ -207,12 +187,6 @@ function main(files) {
       }
       // implicit mode === "continue" so do nothing
     }
-  };
-
-  // handle loop
-
-  while (true) {
-    handle()
   }
 };
 
