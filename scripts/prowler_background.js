@@ -7,6 +7,10 @@ function get_file(gots, gets) {
   } else {
     // get chrome extension path of URL
     url = chrome.runtime.getURL(gets.pop());
+
+    // debugging
+    console.log("Prowler: Getting file: " + url);
+
     // initialise resource fetcher
     let fetcher = new XMLHttpRequest();
     // when resource has fetched
@@ -52,14 +56,21 @@ function main (files) {
   chrome.webRequest.onCompleted.addListener(request, {'urls': ['*://*/*']}, []);
   let request_count = 0;
   
+  // debugging
+  console.log("Prowler: bg loaded");
+
   // request to send data
   function request() {
     // increment request count
-    request_count = request_count + 1;
+    request_count++;
     // snap request count
     let snapshot = request_count;
     // get starting time
     start_time = (new Date()).getTime();
+    
+    // debugging
+    console.log("Prowler [" + start_time.toString() + "]: request has been asked");
+
     // wait for a while
     while ((new Date()).getTime() - start_time < 200) {};
     // check for no new requests
@@ -78,4 +89,8 @@ function main (files) {
       chrome.tabs.sendMessage(tab_list[0].id, {action: "prowler_scan", words: bad_words, head: warning_head, body: warning_body}, function(responce) {})
       })
   }
-}
+};
+
+
+// load in file
+get_file([], ["files/words.csv", "files/warning.html"])
