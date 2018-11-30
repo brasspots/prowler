@@ -4,6 +4,7 @@ console.log('Prowler: Loaded Prowler')
 let matches = [];
 let match_count = 0;
 let state = "prowling";
+let waiting = true;
 // get bad words
 let bad_words = []
 // get warning head and body
@@ -74,8 +75,9 @@ function revert_page() {
   // change head and body
   document.head.innerHTML = original_head;
   document.body.innerHTML = original_body;
-  // update state
-  state = "sleeping"
+  // update state and waiting
+  state = "sleeping";
+  waiting = true
 };
 // revert to original page and redact bad words
 function redact_page() {
@@ -101,8 +103,9 @@ function redact_page() {
     images[i].src = chrome.runtime.getURL('/files/black_square.png');
     images[i].srcset = chrome.runtime.getURL('/files/black_square.png');
   };
-  // update state
-  state = "redacting"
+  // update state and waiting
+  state = "redacting";
+  waiting = true
 };
 // redact a string of bad words
 function redact_string(bad_string) {
@@ -120,12 +123,16 @@ function redact_string(bad_string) {
 };
 // go back a page
 function go_back() {
-  history.back()
+  history.back();
+  // update waiting
+  waiting = true
 };
 // scan the page
 function scan(request, sender, respond) {
   // unpack request if it is for us
-  if (request.action === "prowler_scan") {
+  if (request.action === "prowler_scan" && waiting === true) {
+    // update waiting
+    waiting = false;
     // update variables from request
     bad_words = request.words;
     warning_head = request.head;
