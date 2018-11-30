@@ -53,32 +53,12 @@ function main (files) {
   let warning_body = files[1].substring(files[1].indexOf('<body>') + 6, files[1].indexOf('</body>'));
   
   // add a listener to page load and initialise request count
-  chrome.webRequest.onCompleted.addListener(request, {'urls': ['*://*/*']}, []);
+  chrome.webRequest.onCompleted.addListener(send_it, {'urls': ['*://*/*']}, []);
   let request_count = 0;
   
   // debugging
   console.log("Prowler: bg loaded");
 
-  // request to send data
-  function request() {
-    // increment request count
-    request_count++;
-    // snap request count
-    let snapshot = request_count;
-    // get starting time
-    start_time = (new Date()).getTime();
-    
-    // debugging
-    console.log("Prowler [" + start_time.toString() + "]: request has been asked");
-
-    // wait for a while
-    while ((new Date()).getTime() - start_time < 200) {};
-    // check for no new requests
-    if (snapshot === request_count) {
-      // send
-      send_it()
-    }
-  };
   // send data to active tab
   function send_it() {
     // debugging
