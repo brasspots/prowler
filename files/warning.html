@@ -17,6 +17,18 @@
         width: 500px;
       }
 
+      table {
+        background-color: white;
+        border-collapse: collapse;
+      }
+
+      td, th {
+        border: 2px solid DeepSkyBlue;
+        border-collapse: collapse;
+        text-align: left;
+        padding: 5px;
+      }
+
       div.heading_container {
         background-color: DodgerBlue;
         border-left: 20px solid DeepSkyBlue;
@@ -69,6 +81,9 @@
     <div class="text_container">
       <p class="text">We've been prowling around this site for a while and we bumped into some pretty nasty critters<br><br></p>
       <p class="text">To be precise, we found <span class="highlight" id="critter_count" style="display:inline"></span> of them!<br><br></p>
+      <div id="pre_table">
+        <p class="text" id="pre_table">Click <span class="highlight" id="table_button">here</span> to see a full breakdown of our findings<br><br></p>
+      </div>
       <p class="text">Are you sure you want to continue?<br><br></p>
     </div>
 
