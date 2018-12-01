@@ -1,12 +1,13 @@
 // debug log
 console.log('Prowler: Loaded Prowler')
-// initialise matches list, match_count, state and waiting
+// initialise match frequency, matches list, match_count, state and waiting
+let match_freq = {};
 let matches = [];
 let match_count = 0;
 let state = "prowling";
 let waiting = true;
 // get bad words
-let bad_words = []
+let bad_words = [];
 // get warning head and body
 let warning_head = "";
 let warning_body = "";
@@ -29,7 +30,13 @@ function string_check(text) {
       if (text.toUpperCase().includes(bad_words[i].toUpperCase())) {
         // set hit and increment match_count
         hit = true;
-        match_count++
+        match_count++;
+        // increase frequency
+        if (bad_words[i] in match_freq) {
+          match_freq[bad_words[i]]++
+        } else {
+          match_freq[bad_words[i]] = 1
+        }
       }
     };
     // return if there has been a match
@@ -37,7 +44,7 @@ function string_check(text) {
   }
 };
 // recursive function to traverse DOM and get to end nodes
-function traverse(element){
+function traverse(element) {
   // end of tree
   if (element.childElementCount === 0) {
     // search alt if element is img
@@ -66,9 +73,25 @@ function show_warning() {
   // load in critter count
   document.getElementById('critter_count').innerText = match_count;
   // add button listeners
+  document.getElementById('table_button').addEventListener('click', show_table);
   document.getElementById('continue_no_change').addEventListener('click', revert_page);
   document.getElementById('continue_and_redact').addEventListener('click', redact_page);
   document.getElementById('go_back').addEventListener('click', go_back)
+};
+// show the table
+function show_table() {
+  // get pre table
+  let element = document.getElementById('pre_table');
+  // make table rows
+  let table_content = '';
+  Object.keys(match_freq).forEach(
+    function (key) {
+      // add rows
+      table_content = table_content.concat('<tr>', '<td>', key, '</td>', '<td>', match_freq[key].toString(), '</td>', '</tr>')
+    }
+  );
+  // set to table
+  element.innerHTML = '<table>'.concat(table_content, '</table>')
 };
 // revert to original page
 function revert_page() {
@@ -129,10 +152,10 @@ function go_back() {
 };
 // scan the page
 function scan(request, sender, respond) {
+  // debugging
+  console.log("Prowler: received");
   // unpack request if it is for us
   if (request.action === "prowler_scan" && waiting === true) {
-    // update waiting
-    waiting = false;
     // update variables from request
     bad_words = request.words;
     warning_head = request.head;
@@ -144,6 +167,8 @@ function scan(request, sender, respond) {
     traverse(document.body);
     // new critters detected
     if (match_count !== 0) {
+      // update waiting
+      waiting = false;
       // ready state
       if (state === "prowling") {
         // display warning
@@ -151,8 +176,9 @@ function scan(request, sender, respond) {
       } else if (state === "redacting") {
         // redact page
         redact_page()
+      } else {
+        waiting = true
       }
-      // implicit state === "sleeping" so do nothing
     }
   }
 }
