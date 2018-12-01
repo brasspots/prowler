@@ -53,12 +53,27 @@ function main (files) {
   let warning_body = files[1].substring(files[1].indexOf('<body>') + 6, files[1].indexOf('</body>'));
   
   // add a listener to page load and initialise request count
-  chrome.webRequest.onCompleted.addListener(send_it, {'urls': ['*://*/*']}, []);
+  chrome.webRequest.onCompleted.addListener(request, {'urls': ['*://*/*']}, []);
   let request_count = 0;
-  
+  // initialise sent status
+  let sent = true;
+  // call handle
+  handle();
   // debugging
   console.log("Prowler: bg loaded");
 
+  // request received
+  function request() {
+    // debugging
+    console.log("Prowler: request");
+    // increment request count
+    request_count++;
+    // check if handler's running
+    if (sent === true) {
+      sent = false;
+      setTimeout(handle, 100)
+    }
+  };
   // send data to active tab
   function send_it() {
     // debugging
@@ -68,6 +83,29 @@ function main (files) {
       // send message
       chrome.tabs.sendMessage(tab_list[0].id, {action: "prowler_scan", words: bad_words, head: warning_head, body: warning_body}, function(responce) {})
       })
+  };
+  // send handler
+  function handle() {
+    // initialise previous time and previous count
+    let previous_time = new Date().getTime();
+    let previous_count = request_count;
+    // forever checking
+    while (true) {
+      // debugging
+      console.log("Prowler: checking, forever checking");
+      // check requests
+      if (request_count === previous_count) {
+        if (new Date().getTime() - previous_time > 350) {
+            previous_time = new Date().getTime();
+            send_it();
+            sent = true;
+            return true
+        }
+      } else {
+        previous_count = request_count
+        sent = false;
+      }
+    }
   }
 };
 
