@@ -30,24 +30,13 @@ function get_file(gots, gets) {
 
 // main function
 function main (files) {
-  // initialise bad words and base pointer for getting words out of files[0]
-  let bad_words = []
-  let base_pointer = 0
+  // initialise bad words and exceptions
+  let bad_words = [];
+  let exceptions = [];
   // get words out of files[0]
-  for (let current_pointer = 0; current_pointer < files[0].length; current_pointer++) {
-    // check for comma
-    if (files[0][current_pointer] === ',') {
-      // append the scanned value
-      bad_words.push(files[0].substring(base_pointer, current_pointer).replace('\n', ''));
-      // update pointers
-      base_pointer = current_pointer + 1
-    }
-  };
-  // add last value if no trailing comma
-  if (!files[0].endsWith(',')) {
-    // append last value
-    bad_words.push(files[0].substring(base_pointer, files[0].length).replace('\n', ''))
-  };
+  parse_csv(bad_words, files[0]);
+  // get URLs out of files[2]
+  parse_csv(exceptions, files[2])
   // get warning head and body
   let warning_head = files[1].substring(files[1].indexOf('<head>') + 6, files[1].indexOf('</head>'));
   let warning_body = files[1].substring(files[1].indexOf('<body>') + 6, files[1].indexOf('</body>'));
@@ -57,11 +46,28 @@ function main (files) {
   let request_count = 0;
   // initialise sent status
   let sent = true;
-  // call handle
-  handle();
   // debugging
   console.log("Prowler: bg loaded");
-
+  
+  // parse .csv
+  function parse_csv(out_array, in_string) {
+    let base_pointer = 0;
+    for (let current_pointer = 0; current_pointer < in_string.length; current_pointer++) {
+      // check for comma
+      if (in_string[current_pointer] === ',') {
+        // append the scanned value
+        out_array.push(in_string.substring(base_pointer, current_pointer).replace('\n', ''));
+        // update pointers
+        base_pointer = current_pointer + 1
+      }
+    };
+    // add last value if no trailing comma
+    if (!in_string.endsWith(',')) {
+      // append last value
+      out_array.push(in_string.substring(base_pointer, in_string.length).replace('\n', ''))
+    };
+    console.log("Prowler: parsed .csv ".concat(out_array))
+  };
   // request received
   function request() {
     // debugging
@@ -81,8 +87,22 @@ function main (files) {
     // send message to active tab
     chrome.tabs.query({active: true, currentWindow: true}, function(tab_list) {
       // send message
-      chrome.tabs.sendMessage(tab_list[0].id, {action: "prowler_scan", words: bad_words, head: warning_head, body: warning_body}, function(responce) {})
-      })
+      if (tab_list[0] !== undefined && tab_list[0].url !== undefined && !(check(tab_list[0].url))) {
+        chrome.tabs.sendMessage(tab_list[0].id, {action: "prowler_scan", words: bad_words, head: warning_head, body: warning_body}, function(responce) {})
+      }
+    })
+  };
+  // check url against exceptions
+  function check(url) {
+    // check every exception
+    for (let i = 0; i < exceptions.length; i++) {
+      console.log(exceptions[i]);
+      if (exceptions[i] !== "" && url.startsWith(exceptions[i])) {
+        return true
+      }
+    };
+    // url not exception
+    return false
   };
   // send handler
   function handle() {
@@ -111,4 +131,4 @@ function main (files) {
 
 
 // load in file
-get_file([], ["files/words.csv", "files/warning.html"])
+get_file([], ["files/words.csv", "files/warning.html", "files/exceptions.csv"])
