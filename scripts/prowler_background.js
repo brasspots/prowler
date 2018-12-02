@@ -88,7 +88,7 @@ function main (files) {
     chrome.tabs.query({active: true, currentWindow: true}, function(tab_list) {
       // send message
       if (tab_list[0] !== undefined && tab_list[0].url !== undefined && !(check(tab_list[0].url))) {
-        chrome.tabs.sendMessage(tab_list[0].id, {action: "prowler_scan", words: bad_words, head: warning_head, body: warning_body}, function(responce) {})
+        chrome.tabs.sendMessage(tab_list[0].id, {action: "prowler_scan", words: bad_words, head: warning_head, body: warning_body, scan_word: true, scan_img: true, redact_word: true, redact_img: true}, function(responce) {})
       }
     })
   };
