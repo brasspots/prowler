@@ -30,10 +30,9 @@ function get_file(gots, gets) {
 
 // main function
 function main (files) {
-  // initialise bad words, exception and base pointer for getting words out of files[0]
+  // initialise bad words and exceptions
   let bad_words = [];
   let exceptions = [];
-  let base_pointer = 0;
   // get words out of files[0]
   parse_csv(bad_words, files[0]);
   // get URLs out of files[2]
@@ -50,26 +49,9 @@ function main (files) {
   // debugging
   console.log("Prowler: bg loaded");
   
-  // call first handle
-  chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-    // initialise to scan flag and url
-    let to_scan = true;
-    let url = tabs[0].url;
-    // check every no scan
-    for (let i = 0; i < exceptions.length; i++) {
-      if (url.startsWith(exceptions[i])) {
-        // set to scan to false
-        to_scan = false
-      } 
-    };
-    // call handle if to scan
-    if (to_scan === true) {
-      handle()
-    }
-  });
-
   // parse .csv
   function parse_csv(out_array, in_string) {
+    let base_pointer = 0;
     for (let current_pointer = 0; current_pointer < in_string.length; current_pointer++) {
       // check for comma
       if (in_string[current_pointer] === ',') {
@@ -84,6 +66,7 @@ function main (files) {
       // append last value
       out_array.push(in_string.substring(base_pointer, in_string.length).replace('\n', ''))
     };
+    console.log("Prowler: parsed .csv ".concat(out_array))
   };
   // request received
   function request() {
@@ -94,22 +77,7 @@ function main (files) {
     // check if handler's running
     if (sent === true) {
       sent = false;
-      chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-        // initialise to scan flag and url
-        let to_scan = true;
-        let url = tabs[0].url;
-        // check every no scan
-        for (let i = 0; i < exceptions.length; i++) {
-          if (url.startsWith(exceptions[i])) {
-            // set to scan to false
-            to_scan = false
-          } 
-        };
-        // call handle if to scan
-        if (to_scan === true) {
-          setTimeout(handle, 100)
-        }
-      })
+      setTimeout(handle, 100)
     }
   };
   // send data to active tab
@@ -119,8 +87,22 @@ function main (files) {
     // send message to active tab
     chrome.tabs.query({active: true, currentWindow: true}, function(tab_list) {
       // send message
-      chrome.tabs.sendMessage(tab_list[0].id, {action: "prowler_scan", words: bad_words, head: warning_head, body: warning_body}, function(responce) {})
-      })
+      if (tab_list[0] !== undefined && tab_list[0].url !== undefined && !(check(tab_list[0].url))) {
+        chrome.tabs.sendMessage(tab_list[0].id, {action: "prowler_scan", words: bad_words, head: warning_head, body: warning_body}, function(responce) {})
+      }
+    })
+  };
+  // check url against exceptions
+  function check(url) {
+    // check every exception
+    for (let i = 0; i < exceptions.length; i++) {
+      console.log(exceptions[i]);
+      if (exceptions[i] !== "" && url.startsWith(exceptions[i])) {
+        return true
+      }
+    };
+    // url not exception
+    return false
   };
   // send handler
   function handle() {
