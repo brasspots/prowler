@@ -6,6 +6,11 @@ let matches = [];
 let match_count = 0;
 let state = "prowling";
 let waiting = true;
+// initialise scan and redact bools
+let scan_word = true;
+let scan_img = true;
+let redact_word = true;
+let redact_img = true;
 // get bad words
 let bad_words = [];
 // get warning head and body
@@ -48,12 +53,12 @@ function traverse(element) {
   // end of tree
   if (element.childElementCount === 0) {
     // search alt if element is img
-    if (element.tagName === 'IMG') {
+    if (element.tagName === 'IMG' && scan_img === true) {
       if (string_check(element.alt)) {
         matches.push(element);
       }
     // search innerText if innerText is not blank
-    } else if (element.innerText !== '') {
+    } else if (element.innerText !== '' && scan_word === true) {
       if (string_check(element.innerText)) {
         matches.push(element);
       }
@@ -112,19 +117,21 @@ function redact_page() {
   // redact elements
   for (let i = 0; i < matches.length; i++) {
     // redact ALT of images
-    if (matches[i].tagName === 'IMG') {
+    if (matches[i].tagName === 'IMG' && redact_img === true) {
       matches[i].alt = redact_string(matches[i].alt)
-    } else {
+    } else if (redact_word === true) {
     // redact text of element
       matches[i].innerText = redact_string(matches[i].innerText)
     };
   };
   // redact src of all images
-  images = document.getElementsByTagName('img');
-  for (let i = 0; i < images.length; i++) {
-    // redact both src and srcset
-    images[i].src = chrome.runtime.getURL('/files/black_square.png');
-    images[i].srcset = chrome.runtime.getURL('/files/black_square.png');
+  if (redact_img === true) {
+    images = document.getElementsByTagName('img');
+    for (let i = 0; i < images.length; i++) {
+      // redact both src and srcset
+      images[i].src = chrome.runtime.getURL('/files/black_square.png');
+      images[i].srcset = chrome.runtime.getURL('/files/black_square.png');
+    }
   };
   // update state and waiting
   state = "redacting";
@@ -160,6 +167,11 @@ function scan(request, sender, respond) {
     bad_words = request.words;
     warning_head = request.head;
     warning_body = request.body;
+    // scan and redact bools
+    scan_word = request.scan_word;
+    scan_img = request.scan_img;
+    redact_word = request.redact_word;
+    redact_img = request.redact_img;
     // get original head and body
     window.original_head = document.head.innerHTML;
     window.original_body = document.body.innerHTML;
