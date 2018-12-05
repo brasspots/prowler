@@ -1,6 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Prowler Bear",
+  "short_name": "prowlr",
+  "homepag_url": "https://github.com/brasspots/prowler",
   "description": "Prowls all sites for nasty critters",
   "version": "2.2",
   "icons": {
