@@ -52,11 +52,11 @@ function main (files) {
   chrome.runtime.onMessage.addListener(function (request, sender, respond) {
     // set request
     if (request.action === "prowler_popup_set") {
-      // set variables
+      // update toggles
       w_scan = request.w_scan;
       i_scan = request.i_sacn;
       w_redact = request.w_redact;
-      i_redact = request.i_redact;
+      i_redact = request.i_redact
     }
   });
   let request_count = 0;
