@@ -54,9 +54,12 @@ function main (files) {
     if (request.action === "prowler_popup_set") {
       // update toggles
       w_scan = request.w_scan;
-      i_scan = request.i_sacn;
+      i_scan = request.i_scan;
       w_redact = request.w_redact;
       i_redact = request.i_redact
+    } else if (request.action === "prowler_popup_get") {
+      // send a response
+      respond({scan_word: w_scan, scan_img: i_scan, redact_word: w_redact, redact_img: i_redact})
     }
   });
   let request_count = 0;
