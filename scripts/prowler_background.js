@@ -33,6 +33,11 @@ function main (files) {
   // initialise bad words and exceptions
   let bad_words = [];
   let exceptions = [];
+  // load toggle values
+  let w_scan = true;
+  let i_scan = true;
+  let w_redact = true;
+  let i_redact = true;
   // get words out of files[0]
   parse_csv(bad_words, files[0]);
   // get URLs out of files[2]
@@ -43,6 +48,17 @@ function main (files) {
   
   // add a listener to page load and initialise request count
   chrome.webRequest.onCompleted.addListener(request, {'urls': ['*://*/*']}, []);
+  // add a listener to messages
+  chrome.runtime.onMessage.addListener(function (request, sender, respond) {
+    // set request
+    if (request.action === "prowler_popup_set") {
+      // set variables
+      w_scan = request.w_scan;
+      i_scan = request.i_sacn;
+      w_redact = request.w_redact;
+      i_redact = request.i_redact;
+    }
+  });
   let request_count = 0;
   // initialise sent status
   let sent = true;
@@ -88,7 +104,7 @@ function main (files) {
     chrome.tabs.query({active: true, currentWindow: true}, function(tab_list) {
       // send message
       if (tab_list[0] !== undefined && tab_list[0].url !== undefined && !(check(tab_list[0].url))) {
-        chrome.tabs.sendMessage(tab_list[0].id, {action: "prowler_scan", words: bad_words, head: warning_head, body: warning_body, scan_word: true, scan_img: true, redact_word: true, redact_img: true}, function(responce) {})
+        chrome.tabs.sendMessage(tab_list[0].id, {action: "prowler_scan", words: bad_words, head: warning_head, body: warning_body, scan_word: w_scan, scan_img: i_scan, redact_word: w_redact, redact_img: i_redact}, function(responce) {})
       }
     })
   };
