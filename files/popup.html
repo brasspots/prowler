@@ -13,7 +13,7 @@
       }
 
       table, td, tr, th {
-        border: 0px solid black;
+        border: 0px solid Black;
         padding: 5px;
         text-align: left;
       }
@@ -83,7 +83,7 @@
 
         <td>
           <label class="toggle">
-            <input type="checkbox" id="scan_word_toggle">
+            <input type="checkbox" id="scan_word_toggle" onclick="send_update()">
             <span class="slider"></span>
           </label>
         </td>
@@ -96,7 +96,7 @@
 
         <td>
           <label class="toggle">
-            <input type="checkbox" id="scan_img_toggle">
+            <input type="checkbox" id="scan_img_toggle" onclick="send_update()">
             <span class="slider"></span>
           </label>
         </td>
@@ -109,7 +109,7 @@
 
         <td>
           <label class="toggle">
-            <input type="checkbox" id="redact_word_toggle">
+            <input type="checkbox" id="redact_word_toggle" onclick="send_update()">
             <span class="slider"></span>
           </label>
         </td>
@@ -122,12 +122,24 @@
 
         <td>
           <label class="toggle">
-            <input type="checkbox" id="redact_img_toggle">
+            <input type="checkbox" id="redact_img_toggle" onclick="send_update()">
             <span class="slider"></span>
           </label>
         </td>
       </tr>
     </table>
 
+    <script>
+      let toggles = document.getElementsByTagName('input');
+      for (let i = 0; i < toggles.length; i++) {
+        if (toggles[i].type === "checkbox") {
+          toggles[i].checked = true;
+        };
+      };
+      
+      function send_update() {
+        chrome.runtime.sendMessage({w_scan: document.getElementById('scan_word_toggle').checked, i_scan: document.getElementById('scan_img_toggle').checked, w_redact: document.getElementById('redact_word_toggle').checked, i_redact: document.getElementById('redact_img_toggle').checked}, function (resonce) {});
+      };
+    </script>
   </body>
 </html>
