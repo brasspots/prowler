@@ -129,17 +129,6 @@
       </tr>
     </table>
 
-    <script>
-      let toggles = document.getElementsByTagName('input');
-      for (let i = 0; i < toggles.length; i++) {
-        if (toggles[i].type === "checkbox") {
-          toggles[i].checked = true;
-        };
-      };
-      
-      function send_update() {
-        chrome.runtime.sendMessage({w_scan: document.getElementById('scan_word_toggle').checked, i_scan: document.getElementById('scan_img_toggle').checked, w_redact: document.getElementById('redact_word_toggle').checked, i_redact: document.getElementById('redact_img_toggle').checked}, function (resonce) {});
-      };
-    </script>
+    <script type="text/javascript" src="popup.js"></script>
   </body>
 </html>
