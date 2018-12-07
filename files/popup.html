@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8">
+    <style>
+      * {
+        font-family: Helvetica;
+        font-size: 15px;
+        margin: auto;
+        text-align: left;
+        width: 100%;
+        border: 0px solid #ff0080;
+      }
+
+      table, td, tr, th {
+        border: 0px solid Black;
+        padding: 5px;
+        text-align: left;
+      }
+
+      table {
+        width: 200px;
+      }
+      
+      .toggle {
+        position: relative;
+        display: inline-block;
+        width: 30px;
+        height: 17px;
+      }
+
+      .toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: LightGray;
+        transition: .4s;
+        border-radius: 17px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 13px;
+        width: 13px;
+        left: 2px;
+        bottom: 2px;
+        background-color: White;
+        transition: .4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: DodgerBlue;
+      }
+
+      input:focus + .slider {
+        box-shadow: 0 0 1px DodgerBlue;
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(13px);
+      }
+
+    </style>
+  </head>
+  <body>
+
+    <table class="content_container">
+      <tr class="option_container">
+        <td>
+          <p class="option_label" id="scan_word_label">Scan Words</p>
+        </td>
+
+        <td>
+          <label class="toggle">
+            <input type="checkbox" id="scan_word_toggle">
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
+
+      <tr class="option_container">
+        <td>
+          <p class="option_label" id="scan_img_label">Scan Images</p>
+        </td>
+
+        <td>
+          <label class="toggle">
+            <input type="checkbox" id="scan_img_toggle">
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
+
+      <tr class="option_container">
+        <td>
+          <p class="option_label" id="redact_word_label">Redact Words</p>
+        </td>
+
+        <td>
+          <label class="toggle">
+            <input type="checkbox" id="redact_word_toggle">
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
+
+      <tr class="option_container">
+        <td>
+          <p class="option_label" id="redact_img_label">Redact Images</p>
+        </td>
+
+        <td>
+          <label class="toggle">
+            <input type="checkbox" id="redact_img_toggle">
+            <span class="slider"></span>
+          </label>
+        </td>
+      </tr>
+    </table>
+
+    <script type="text/javascript" src="../scripts/popup.js"></script>
+  </body>
+</html>

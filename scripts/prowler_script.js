@@ -96,7 +96,7 @@ function show_table() {
     }
   );
   // set to table
-  element.innerHTML = '<table>'.concat(table_content, '</table>')
+  element.innerHTML = '<table>'.concat(table_content, '</table><br>')
 };
 // revert to original page
 function revert_page() {
